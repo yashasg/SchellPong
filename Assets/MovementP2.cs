@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Movement : MonoBehaviour {
+public class MovementP2 : MonoBehaviour {
 	public float m_speed;
 	private bool m_leftKeyPressed;
 	private bool m_rightKeyPressed;
@@ -12,7 +12,7 @@ public class Movement : MonoBehaviour {
 		resetPaddles ();
 	}
 	public void resetPaddles (){
-		gameObject.transform.position = new Vector2(0.0f,-4.77f);
+		gameObject.transform.position = new Vector2(0.0f,4.77f);;
 		m_leftKeyPressed = false;
 		m_rightKeyPressed = false;
 		thisRigidBody = GetComponent<Rigidbody2D>();
@@ -43,25 +43,25 @@ public class Movement : MonoBehaviour {
 	void checkForKeyPress(){
 		//check if left key is still pressed
 		
-		if(Input.GetKeyDown(KeyCode.A))
+		if(Input.GetKeyDown(KeyCode.LeftArrow))
 		{		
 			m_leftKeyPressed = true;
 
 		}
 		//check if left key is released
-		else if(Input.GetKeyUp(KeyCode.A))
+		else if(Input.GetKeyUp(KeyCode.LeftArrow))
 		{		
 			m_leftKeyPressed = false;
 
 		}
 		//check if right key is still pressed
 
-		if(Input.GetKeyDown(KeyCode.D)){
+		if(Input.GetKeyDown(KeyCode.RightArrow)){
 
 			m_rightKeyPressed = true;
 		}
 		//check if right key is released.
-		else if(Input.GetKeyUp(KeyCode.D)) {
+		else if(Input.GetKeyUp(KeyCode.RightArrow)) {
 
 			m_rightKeyPressed = false;
 		}
