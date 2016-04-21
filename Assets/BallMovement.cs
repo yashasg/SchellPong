@@ -15,7 +15,7 @@ public class BallMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		resetGame ();
-
+         
 
 	}
 
@@ -25,38 +25,29 @@ public class BallMovement : MonoBehaviour {
 		m_ballRigidBody = GetComponent<Rigidbody2D> ();
 		transform.position = Vector2.zero;
 		transform.rotation = new Quaternion (0, 0, 0,0);
-		m_ballRigidBody.velocity = Vector2.down;
+		m_ballRigidBody.velocity = Vector2.down * m_ConstantVelocity;
 		m_ballRigidBody.angularVelocity =0.0f;
 		//reset p1 paddle
 		m_player1.GetComponent<Movement>().resetPaddles();
 		//reset p2 paddle
-		m_player2.GetComponent<MovementP2>().resetPaddles();
+		m_player2.GetComponent<Movement>().resetPaddles();
 
 	}
-	// Update is called once per frame
-	void FixedUpdate () {
-
-		m_ballRigidBody.velocity = m_ballRigidBody.velocity.normalized * m_ConstantVelocity;
-	}
-	void OnCollisionStay2D(Collision2D i_collision){
+	void OnCollisionEnter2D(Collision2D i_collision){
 	Debug.Log (i_collision.gameObject.tag);
-
+        //if the ball collided with the player
 		if (i_collision.gameObject.tag.Equals ("Player")) {
-			Vector2 myPosition = m_ballRigidBody.position;
-			m_ConstantVelocity += 0.5f;
-			Vector2 reflectionVec = Vector2.Reflect (myPosition, Vector2.up);
-			m_ballRigidBody.AddForce (reflectionVec.normalized * m_ballSpeed);
-		}
-		else if(i_collision.gameObject.tag.Equals ("LeftWall")) {
-			Vector2 myPosition = m_ballRigidBody.position;
-			Vector2 reflectionVecNorm = Vector2.Reflect (myPosition, Vector2.right).normalized;
-			m_ballRigidBody.AddForce (reflectionVecNorm * m_ballSpeed/4);
-		}
-		else if(i_collision.gameObject.tag.Equals ("RightWall")) {
-			Vector2 myPosition = m_ballRigidBody.position;
-			Vector2 reflectionVecNorm = Vector2.Reflect (myPosition, Vector2.left).normalized;
-			m_ballRigidBody.AddForce (reflectionVecNorm * m_ballSpeed/4);
-		}
+            //get the velocity vector of ball and paddle and get a reflection vector off the ball
+            //increment the speed of the reflection vector with half of the paddle speed.
+            Vector2 myVelocity = m_ballRigidBody.velocity;
+            Vector2 paddleVelocity = i_collision.gameObject.GetComponent<Rigidbody2D>().velocity;
+            m_ConstantVelocity += 0.5f;
+            Vector2 reflectionVec = Vector2.Reflect (myVelocity, Vector2.up);
+            reflectionVec = new Vector2(reflectionVec.x + (paddleVelocity.x/2), reflectionVec.y);
+
+            m_ballRigidBody.velocity = reflectionVec.normalized* m_ConstantVelocity;
+
+        }
 		else if(i_collision.gameObject.tag.Equals ("BottomWall")) {
 			m_P2Count++;
 			m_P2.text = "P2 Score: " + m_P2Count;
